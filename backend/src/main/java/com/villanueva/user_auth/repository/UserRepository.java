@@ -1,9 +1,10 @@
-package com.villanueva.userauth.repository;
+package com.villanueva.user_auth.repository;
 
-import com.villanueva.userauth.model.User;
+import com.villanueva.user_auth.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+    // FRS Requirement: We now find users by email, not username
+    Optional<User> findByEmail(String email);
 }

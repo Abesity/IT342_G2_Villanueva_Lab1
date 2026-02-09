@@ -1,4 +1,4 @@
-package com.villanueva.userauth.config;
+package com.villanueva.user_auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

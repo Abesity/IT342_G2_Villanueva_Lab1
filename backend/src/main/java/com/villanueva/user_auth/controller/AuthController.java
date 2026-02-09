@@ -1,7 +1,7 @@
-package com.villanueva.userauth.controller;
+package com.villanueva.user_auth.controller;
 
-import com.villanueva.userauth.model.User;
-import com.villanueva.userauth.repository.UserRepository;
+import com.villanueva.user_auth.model.User;
+import com.villanueva.user_auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Allow React to talk to Spring
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
@@ -20,28 +20,30 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // REGISTER ENDPOINT
+    // REGISTER
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username is already taken!");
+        // FRS Requirement: Check if email already exists
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("Email is already in use!");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
         return ResponseEntity.ok("User registered successfully!");
     }
 
-    // LOGIN ENDPOINT
+    // LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginRequest) {
-        Optional<User> user = userRepository.findByUsername(loginRequest.getUsername());
+        // FRS Requirement: Login with Email
+        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
 
         if (user.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
             return ResponseEntity.ok("Login successful!");
         }
 
-        return ResponseEntity.status(401).body("Invalid username or password");
+        return ResponseEntity.status(401).body("Invalid email or password");
     }
 }
